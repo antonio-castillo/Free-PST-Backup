@@ -202,7 +202,7 @@ namespace Free_PST_Backup
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/antonio-castillo");
+          System.Diagnostics.Process.Start("explorer.exe", "https://github.com/antonio-castillo");
         }
     }
 }
