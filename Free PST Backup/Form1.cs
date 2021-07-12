@@ -59,9 +59,6 @@ namespace Free_PST_Backup
             {
                 MessageBox.Show("No PST files found");
             }
-
-
-
         }
 
 
@@ -96,59 +93,70 @@ namespace Free_PST_Backup
         private void button2_Click(object sender, EventArgs e)
         {
 
-            progressBar1.Value = 0;
+            //comprobar si existe la carpeta antes de crearla
 
-
-            //Cerrar Outlook antes de copiar
-            killOutlook();
-
-            // Determine if there are any items checked.  
-            if (checkedListBox.CheckedItems.Count != 0)
+            if (Directory.Exists(DateTime.Now.ToString("[yy-MM-dd]" + " PST Backup")))
             {
-
-
-                showMessage("This process may take a while \n Please, don't close the application \n This message will close automatically in 4 seconds", 4000);  /* 1 segundo = 1000 */
-
-                Directory.CreateDirectory(DateTime.Now.ToString("[yy-MM-dd]" + " PST Backup"));
-                // If so, loop through all checked items and print results.  
-
-                string dest_path = DateTime.Now.ToString("[yy-MM-dd]" + " PST Backup");
-                for (int i = 0; i < checkedListBox.CheckedItems.Count; i++)
-                {
-
-                    string path_item = Path.GetFullPath(checkedListBox.CheckedItems[i].ToString());
-                    string path_only = Path.GetDirectoryName(checkedListBox.CheckedItems[i].ToString());
-                    String file_name = Path.GetFileName(checkedListBox.CheckedItems[i].ToString());
-                    string path_folderDate = dest_path + "/" + file_name;
-
-                    //Meter condicion si existe archivo
-                    if (File.Exists(path_folderDate))
-                    {
-                        count++;
-                        FileInfo file = new FileInfo(path_item);
-                        file.CopyTo(dest_path + "/" + "(" + count + ")" + file_name);
-
-
-                    }
-                    else
-                    {
-                        FileInfo file = new FileInfo(path_item);
-                        file.CopyTo(dest_path + "/" + file_name);
-                    }
-
-                }
-                //cuando se termina la copia se llena la barra indicando el proceso completado
-                progressBar1.Value = 1;
-
-
-                //abre la ubicacion
-                Process.Start("explorer.exe", dest_path );
+                MessageBox.Show("The backup directory alredy exists \n please, rename or delete it before continue");
             }
-
-
             else
             {
-                MessageBox.Show("You must select a PST");
+
+                progressBar1.Value = 0;
+
+
+                //Cerrar Outlook antes de copiar
+                killOutlook();
+
+                // Determine if there are any items checked.  
+                if (checkedListBox.CheckedItems.Count != 0)
+                {
+
+
+                    showMessage("This process may take a while \n Please, don't close the application \n This message will close automatically in 4 seconds", 4000);  /* 1 segundo = 1000 */
+
+                    Directory.CreateDirectory(DateTime.Now.ToString("[yy-MM-dd]" + " PST Backup"));
+                    // If so, loop through all checked items and print results.  
+
+                    string dest_path = DateTime.Now.ToString("[yy-MM-dd]" + " PST Backup");
+
+                    for (int i = 0; i < checkedListBox.CheckedItems.Count; i++)
+                    {
+
+                        string path_item = Path.GetFullPath(checkedListBox.CheckedItems[i].ToString());
+                        string path_only = Path.GetDirectoryName(checkedListBox.CheckedItems[i].ToString());
+                        String file_name = Path.GetFileName(checkedListBox.CheckedItems[i].ToString());
+                        string path_folderDate = dest_path + "/" + file_name;
+
+                        //Meter condicion si existe archivo
+                        if (File.Exists(path_folderDate))
+                        {
+                            count++;
+                            FileInfo file = new FileInfo(path_item);
+                            file.CopyTo(dest_path + "/" + "(" + count + ")" + file_name);
+
+
+                        }
+                        else
+                        {
+                            FileInfo file = new FileInfo(path_item);
+                            file.CopyTo(dest_path + "/" + file_name);
+                        }
+
+                    }
+                    //cuando se termina la copia se llena la barra indicando el proceso completado
+                    progressBar1.Value = 1;
+
+
+                    //abre la ubicacion
+                    Process.Start("explorer.exe", dest_path);
+                }
+
+
+                else
+                {
+                    MessageBox.Show("You must select a PST");
+                }
             }
         }
 
@@ -169,7 +177,7 @@ namespace Free_PST_Backup
             }
         }
 
-
+ 
         private void timeTick(object sender, EventArgs e)
         {
             (sender as Timer).Stop();  /* Detiene el Timer */
